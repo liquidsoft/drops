@@ -2,11 +2,9 @@ drops
 =====
 Extensible drop-down field.
 
-# Available fields
-Currently only select field is bundled in the core. More fields will be
-coming bundled or in external packages.
+## Select field
 
-## Select
+### Available options
 ```js
 var dropsField = drops.create("select", element, {
     // Placeholder as text (default: data-placeholder attribute)
