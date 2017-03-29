@@ -1,0 +1,29 @@
+.drops.drops-select {
+
+  .drops-query {
+    input {
+      width: 100%;
+      border: none;
+      //border-bottom: 1px solid $drops-border-color;
+      padding: $drops-select-option-padding;
+      outline: none;
+    }
+  }
+
+  .drops-options {
+    .drops-option {
+      padding: $drops-select-option-padding;
+      transition: background-color ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: $drops-select-option-selected-background-color;
+      }
+
+      &.drops-selected {
+        background-color: $drops-select-option-selected-background-color;
+      }
+    }
+  }
+
+}

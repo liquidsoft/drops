@@ -1,0 +1,261 @@
+/*
+ |--------------------------------------------------------------------------
+ | Select field
+ |--------------------------------------------------------------------------
+ |
+ |
+ |
+ */
+
+import assign from "object-assign";
+import Field from "./Field";
+import * as symbols from "./symbols";
+import {debounce} from "./utils";
+import Symbol from "es6-symbol";
+
+// Local symbols
+
+export default class SelectField extends Field {
+
+    /*
+     -------------------------------
+     Initializers
+     -------------------------------
+     */
+
+    constructor(input, options = {}) {
+        if (input.nodeName.toLowerCase() !== "select") {
+            throw new Error("The select field can only instantiate select elements!");
+            return;
+        }
+
+        super(input, options);
+    }
+
+    [symbols.initializeOptions](options) {
+        super[symbols.initializeOptions](options);
+
+        this.options = assign(this.options, {
+            placeholder: this.elements.input.dataset.placeholder || "",
+
+            // Query
+            queryOptions: true,
+            queryPlaceholder: "Filter options...",
+            queryDebounce: 250,
+            query(field, options, query) {
+                // Filter by label
+                options.forEach((option) => {
+                    option.style.display = option.dataset.label.indexOf(query) === 0 ?
+                        "block" : "none";
+                });
+            },
+
+            // Selection
+            getSelection(field, value) {
+                var data = field.getOptionData(value);
+                return data ? data.label : "";
+            },
+
+            // Option
+            getOption(data) {
+                return data.label;
+            }
+
+        }, options);
+    }
+
+    [symbols.initializeView]() {
+        super[symbols.initializeView]();
+
+        //
+        // Overrides
+        //
+
+        this.elements.wrapper.className += " drops-select";
+
+        //
+        // Options query
+        //
+
+        if (this.options.queryOptions) {
+            this.elements.query = document.createElement("div");
+            this.elements.query.className = "drops-query";
+            this.elements.body.appendChild(this.elements.query);
+
+            this.elements.queryInput = document.createElement("input");
+            this.elements.queryInput.type = "text";
+            this.elements.queryInput.placeholder = this.options.queryPlaceholder;
+            this.elements.query.appendChild(this.elements.queryInput);
+        }
+
+        //
+        // Options
+        //
+
+        this.elements.options = document.createElement("div");
+        this.elements.options.className = "drops-options";
+        this.elements.body.appendChild(this.elements.options);
+    }
+
+    [symbols.initializeState]() {
+        var options = [];
+
+        Array.prototype.slice.call(this.elements.input.options).forEach((option) => {
+            options.push({
+                value: option.value,
+                label: option.innerText,
+                selected: option.selected
+            });
+        });
+
+        this.setOptions(options, true);
+    }
+
+    [symbols.initializeEvents]() {
+        super[symbols.initializeEvents]();
+
+        //
+        // Options click event
+        //
+
+        this.elements.options.addEventListener("click", (e) => {
+            if (e.target.className.indexOf("drops-option") > -1) {
+                this.set(e.target.dataset.value);
+                this.close();
+            }
+        });
+
+        //
+        // Query input
+        //
+
+        if (this.elements.queryInput) {
+
+            // Filter on input
+            this.elements.queryInput.addEventListener("input", debounce(this.options.queryDebounce, () => {
+                this.options.query(
+                    this,
+                    this.elements.options.querySelectorAll(".drops-option"),
+                    this.elements.queryInput.value
+                );
+            }));
+
+            // Focus on open
+            this.on("opened", () => {
+                this.elements.queryInput.focus();
+            });
+        }
+    }
+
+    /*
+     -------------------------------
+     Option management
+     -------------------------------
+     */
+
+    getOptionData(value) {
+        var option = this.elements.options.querySelector(`.drops-option[data-value='${value}']`);
+        return option ? option.dataset : null;
+    }
+
+    setOptions(options, silent = false) {
+        // Clear selection
+        this.set(null, true);
+
+        // Clear current options
+        this.elements.input.innerHTML = "";
+        this.elements.options.innerHTML = "";
+
+        // Push placeholder input option
+        var placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.innerText = this.options.placeholder;
+        this.elements.input.appendChild(placeholder);
+
+        // Build options
+        var selection;
+
+        options.forEach((optionData) => {
+            if ((typeof optionData.value !== "string") || (optionData.value.length === 0)) {
+                return;
+            }
+
+            if (!optionData.label) {
+                optionData.label = optionData.value;
+            }
+
+            // Create input option
+            var inputOption = document.createElement("option");
+            inputOption.value = optionData.value;
+            inputOption.innerText = optionData.label;
+            this.elements.input.appendChild(inputOption);
+
+            // Create option
+            var option = document.createElement("div");
+            option.className = "drops-option";
+            option.innerHTML = this.options.getOption(optionData);
+
+            Object.keys(optionData).forEach((key) => {
+                option.dataset[key] = optionData[key];
+            });
+
+            this.elements.options.appendChild(option);
+
+            // Select if selected
+            if (optionData.selected) {
+                selection = optionData.value;
+            }
+        });
+
+        // Set selection
+        this.set(selection, silent);
+    }
+
+    /*
+     -------------------------------
+     Value
+     -------------------------------
+     */
+
+    [symbols.setValue](value) {
+        if (this.get() === value) {
+            return false;
+        }
+
+        // Get option
+        var option;
+
+        if ((value != null) && (value.length > 0)) {
+            option = this.elements.options.querySelector(`.drops-option[data-value='${value}']`);
+
+            if (!option) {
+                return false;
+            }
+        }
+
+        // Clear current selection
+        var current = this.elements.options.querySelector(".drops-option.drops-selected");
+
+        if (current) {
+            var currentClasses = current.className.split(" "),
+                selectedIndex = currentClasses.indexOf("drops-selected");
+
+            currentClasses.splice(selectedIndex, 1);
+            current.className = currentClasses.join(" ");
+            current.dataset.selected = false;
+        }
+
+        // Clear input selection
+        this.elements.input.value = "";
+
+        // Set new selection
+        if (option) {
+            option.className += " drops-selected";
+            option.dataset.selected = true;
+            this.elements.input.value = value;
+        }
+
+        return true;
+    }
+
+}

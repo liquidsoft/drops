@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Drops example</title>
+    <link rel="stylesheet" href="./../dist/drops.css"/>
+    <style>
+        body {
+            background-color: #666;
+            text-align: center;
+        }
+
+        .container {
+            width: 50%;
+            margin: 25px auto;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <select id="select-field" data-placeholder="Chose an option">
+        <option value="option_1" selected>Option 1</option>
+        <option value="option_2">Option 2</option>
+    </select>
+</div>
+<script type="text/javascript" src="./../dist/drops.js"></script>
+<script type="text/javascript">
+    var select = window.select = document.getElementById("select-field");
+    var field = window.field = drops.create("select", select);
+</script>
+</body>
+</html>
