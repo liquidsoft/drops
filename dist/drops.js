@@ -608,8 +608,14 @@ var SelectField = function (_Field) {
 
             var silent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-            // Clear selection
-            this.set(null, true);
+            var selection = null;
+
+            if (this.get().length === 0) {
+                selection = "";
+            } else {
+                // Clear selection
+                this.set(null, true);
+            }
 
             // Clear current input options
             Array.prototype.slice.call(this.elements.input.options).forEach(function (option) {
@@ -620,14 +626,10 @@ var SelectField = function (_Field) {
 
             // Clear current options
             Array.prototype.slice.call(this.elements.options.children).forEach(function (option) {
-                if (option.dataset.value.lenth > 0) {
+                if (option.dataset.value.length > 0) {
                     _this3.elements.options.removeChild(option);
                 }
             });
-
-            // Clear current options
-            //this.elements.input.innerHTML = "";
-            //this.elements.options.innerHTML = "";
 
             // Push placeholder input option
             var placeholder = document.createElement("option");
@@ -636,42 +638,66 @@ var SelectField = function (_Field) {
             this.elements.input.appendChild(placeholder);
 
             // Build options
-            var selection;
-
             options.forEach(function (optionData) {
-                if (typeof optionData.value !== "string") {
-                    return;
-                }
+                // Delay selection for later
+                var selected = optionData.selected;
+                optionData.selected = false;
 
-                if (!optionData.label) {
-                    optionData.label = optionData.value;
-                }
-
-                // Create input option
-                var inputOption = document.createElement("option");
-                inputOption.value = optionData.value;
-                inputOption.innerText = optionData.label;
-                _this3.elements.input.appendChild(inputOption);
-
-                // Create option
-                var option = document.createElement("div");
-                option.className = "drops-option";
-                option.innerHTML = _this3.options.getOption(optionData);
-
-                Object.keys(optionData).forEach(function (key) {
-                    option.dataset[key] = optionData[key];
-                });
-
-                _this3.elements.options.appendChild(option);
+                _this3.addOption(optionData, true);
 
                 // Select if selected
-                if (optionData.selected) {
+                if (selected) {
                     selection = optionData.value;
                 }
             });
 
             // Set selection
             this.set(selection, silent);
+        }
+    }, {
+        key: "addOption",
+        value: function addOption(data) {
+            var silent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
+            if (typeof data.value !== "string") {
+                return;
+            }
+
+            // Only add one empty option
+            if (data.value.length === 0 && this.elements.options.querySelector(".drops-option[data-value='']")) {
+                return;
+            }
+
+            if (!data.label) {
+                data.label = data.value;
+            }
+
+            // Create input option
+            var inputOption = document.createElement("option");
+            inputOption.value = data.value;
+            inputOption.innerText = data.label;
+            this.elements.input.appendChild(inputOption);
+
+            // Create option
+            var option = document.createElement("div");
+            option.className = "drops-option";
+            option.innerHTML = this.options.getOption(data);
+
+            Object.keys(data).forEach(function (key) {
+                option.dataset[key] = data[key];
+            });
+
+            // Prepend option if empty option
+            if (data.value.length === 0 && this.elements.options.children.length > 0) {
+                this.elements.options.insertBefore(option, this.elements.options.firstChild);
+            } else {
+                this.elements.options.appendChild(option);
+            }
+
+            // Select ?
+            if (data.selected) {
+                this.set(option.value, silent);
+            }
         }
 
         /*

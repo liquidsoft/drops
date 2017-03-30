@@ -159,8 +159,15 @@ export default class SelectField extends Field {
     }
 
     setOptions(options, silent = false) {
-        // Clear selection
-        this.set(null, true);
+        var selection = null;
+
+        if (this.get().length === 0) {
+            selection = "";
+        }
+        else {
+            // Clear selection
+            this.set(null, true);
+        }
 
         // Clear current input options
         Array.prototype.slice.call(this.elements.input.options).forEach((option) => {
@@ -176,10 +183,6 @@ export default class SelectField extends Field {
             }
         });
 
-        // Clear current options
-        //this.elements.input.innerHTML = "";
-        //this.elements.options.innerHTML = "";
-
         // Push placeholder input option
         var placeholder = document.createElement("option");
         placeholder.value = "";
@@ -187,8 +190,6 @@ export default class SelectField extends Field {
         this.elements.input.appendChild(placeholder);
 
         // Build options
-        var selection = null;
-
         options.forEach((optionData) => {
             // Delay selection for later
             var selected = optionData.selected;
