@@ -1,6 +1,6 @@
 {
   "name": "drops",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Extendable dropdown field",
   "main": "./build/index.js",
   "scripts": {

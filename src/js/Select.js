@@ -171,7 +171,7 @@ export default class SelectField extends Field {
 
         // Clear current options
         Array.prototype.slice.call(this.elements.options.children).forEach((option) => {
-            if (option.dataset.value.lenth > 0) {
+            if (option.dataset.value.length > 0) {
                 this.elements.options.removeChild(option);
             }
         });
@@ -187,42 +187,66 @@ export default class SelectField extends Field {
         this.elements.input.appendChild(placeholder);
 
         // Build options
-        var selection;
+        var selection = null;
 
         options.forEach((optionData) => {
-            if (typeof optionData.value !== "string") {
-                return;
-            }
+            // Delay selection for later
+            var selected = optionData.selected;
+            optionData.selected = false;
 
-            if (!optionData.label) {
-                optionData.label = optionData.value;
-            }
-
-            // Create input option
-            var inputOption = document.createElement("option");
-            inputOption.value = optionData.value;
-            inputOption.innerText = optionData.label;
-            this.elements.input.appendChild(inputOption);
-
-            // Create option
-            var option = document.createElement("div");
-            option.className = "drops-option";
-            option.innerHTML = this.options.getOption(optionData);
-
-            Object.keys(optionData).forEach((key) => {
-                option.dataset[key] = optionData[key];
-            });
-
-            this.elements.options.appendChild(option);
+            this.addOption(optionData, true);
 
             // Select if selected
-            if (optionData.selected) {
+            if (selected) {
                 selection = optionData.value;
             }
         });
 
         // Set selection
         this.set(selection, silent);
+    }
+
+    addOption(data, silent = false) {
+        if (typeof data.value !== "string") {
+            return;
+        }
+
+        // Only add one empty option
+        if ((data.value.length === 0) && this.elements.options.querySelector(".drops-option[data-value='']")) {
+            return;
+        }
+
+        if (!data.label) {
+            data.label = data.value;
+        }
+
+        // Create input option
+        var inputOption = document.createElement("option");
+        inputOption.value = data.value;
+        inputOption.innerText = data.label;
+        this.elements.input.appendChild(inputOption);
+
+        // Create option
+        var option = document.createElement("div");
+        option.className = "drops-option";
+        option.innerHTML = this.options.getOption(data);
+
+        Object.keys(data).forEach((key) => {
+            option.dataset[key] = data[key];
+        });
+
+        // Prepend option if empty option
+        if ((data.value.length === 0) && (this.elements.options.children.length > 0)) {
+            this.elements.options.insertBefore(option, this.elements.options.firstChild);
+        }
+        else {
+            this.elements.options.appendChild(option);
+        }
+
+        // Select ?
+        if (data.selected) {
+            this.set(option.value, silent);
+        }
     }
 
     /*
