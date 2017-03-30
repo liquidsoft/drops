@@ -221,7 +221,7 @@ var SelectField = function (_Field) {
             var selection;
 
             options.forEach(function (optionData) {
-                if (typeof optionData.value !== "string" || optionData.value.length === 0) {
+                if (typeof optionData.value !== "string") {
                     return;
                 }
 
@@ -272,7 +272,7 @@ var SelectField = function (_Field) {
             // Get option
             var option;
 
-            if (_value != null && _value.length > 0) {
+            if (typeof _value === "string") {
                 option = this.elements.options.querySelector(".drops-option[data-value='" + _value + "']");
 
                 if (!option) {

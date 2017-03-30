@@ -232,7 +232,7 @@ var Field = function () {
         key: symbols.setSelection,
         value: function value(_value) {
             // Clear
-            if (_value == null || _value.length === 0) {
+            if (typeof _value !== "string") {
                 return this[symbols.clearSelection]();
             }
 
@@ -334,13 +334,15 @@ var Field = function () {
         value: function set(value) {
             var silent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+            // Only trigger if the set was actually performed
             if (this[symbols.setValue](value)) {
-                this[symbols.setSelection](this.get());
-
                 if (!silent) {
                     this.trigger("change", this);
                 }
             }
+
+            // Update selection
+            this[symbols.setSelection](this.get());
 
             return this;
         }

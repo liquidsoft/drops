@@ -42,8 +42,8 @@ var dropsField = drops.create("select", element, {
 /**
 * setOptions(array options)
 * 
-* The "value" field is mandatory and cannot be empty.
-* Custom fields must be dataset compliat(camel-case).
+* The "value" field is mandatory and must be a string.
+* Custom fields must be dataset compliant (camel-case).
 */
 
 dropsField.setOptions([
@@ -63,4 +63,17 @@ dropsField.setOptions([
 */
 
 var data = dropsField.getOptionData("option_1");
+
+/**
+* get()
+* 
+* Returns the current selection value.
+*/
+
+/**
+* set(value)
+*
+* Sets the current selection. Pass null to deselect all.
+*/
+
 ```

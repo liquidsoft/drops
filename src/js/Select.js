@@ -176,7 +176,7 @@ export default class SelectField extends Field {
         var selection;
 
         options.forEach((optionData) => {
-            if ((typeof optionData.value !== "string") || (optionData.value.length === 0)) {
+            if (typeof optionData.value !== "string") {
                 return;
             }
 
@@ -225,7 +225,7 @@ export default class SelectField extends Field {
         // Get option
         var option;
 
-        if ((value != null) && (value.length > 0)) {
+        if (typeof value === "string") {
             option = this.elements.options.querySelector(`.drops-option[data-value='${value}']`);
 
             if (!option) {

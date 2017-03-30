@@ -205,7 +205,7 @@ export default class Field {
 
     [symbols.setSelection](value) {
         // Clear
-        if ((value == null) || (value.length === 0)) {
+        if (typeof value !== "string") {
             return this[symbols.clearSelection]();
         }
 
@@ -300,13 +300,15 @@ export default class Field {
     }
 
     set(value, silent = false) {
+        // Only trigger if the set was actually performed
         if (this[symbols.setValue](value)) {
-            this[symbols.setSelection](this.get());
-
             if (!silent) {
                 this.trigger("change", this);
             }
         }
+
+        // Update selection
+        this[symbols.setSelection](this.get());
 
         return this;
     }

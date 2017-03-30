@@ -233,7 +233,7 @@ var Field = function () {
         key: symbols.setSelection,
         value: function value(_value) {
             // Clear
-            if (_value == null || _value.length === 0) {
+            if (typeof _value !== "string") {
                 return this[symbols.clearSelection]();
             }
 
@@ -335,13 +335,15 @@ var Field = function () {
         value: function set(value) {
             var silent = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
+            // Only trigger if the set was actually performed
             if (this[symbols.setValue](value)) {
-                this[symbols.setSelection](this.get());
-
                 if (!silent) {
                     this.trigger("change", this);
                 }
             }
+
+            // Update selection
+            this[symbols.setSelection](this.get());
 
             return this;
         }
@@ -623,7 +625,7 @@ var SelectField = function (_Field) {
             var selection;
 
             options.forEach(function (optionData) {
-                if (typeof optionData.value !== "string" || optionData.value.length === 0) {
+                if (typeof optionData.value !== "string") {
                     return;
                 }
 
@@ -674,7 +676,7 @@ var SelectField = function (_Field) {
             // Get option
             var option;
 
-            if (_value != null && _value.length > 0) {
+            if (typeof _value === "string") {
                 option = this.elements.options.querySelector(".drops-option[data-value='" + _value + "']");
 
                 if (!option) {
