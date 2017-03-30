@@ -41,6 +41,10 @@ export default class Field {
 
             getPlaceholder(field, placeholder) {
                 return placeholder;
+            },
+
+            getArrow(field) {
+                return "";
             }
 
         }, options);
@@ -64,6 +68,12 @@ export default class Field {
         this.elements.head = document.createElement("div");
         this.elements.head.className = "drops-head";
         this.elements.wrapper.appendChild(this.elements.head);
+
+        this.elements.arrow = document.createElement("div");
+        this.elements.arrow.className = "drops-arrow";
+        this.elements.arrow.innerHTML = this.options.getArrow(this);
+        this.elements.head.appendChild(this.elements.arrow);
+
 
         this.elements.placeholder = document.createElement("div");
         this.elements.placeholder.className = "drops-placeholder";

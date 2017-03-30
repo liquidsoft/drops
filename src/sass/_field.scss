@@ -27,9 +27,8 @@
       display: none;
     }
 
-    &:after {
+    .drops-arrow {
       display: block;
-      content: " ";
       position: absolute;
       top: 50%;
       right: $drops-arrow-offset;
