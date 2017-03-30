@@ -207,9 +207,23 @@ var SelectField = function (_Field) {
             // Clear selection
             this.set(null, true);
 
+            // Clear current input options
+            Array.prototype.slice.call(this.elements.input.options).forEach(function (option) {
+                if (option.value.length > 0) {
+                    _this3.elements.input.removeChild(option);
+                }
+            });
+
             // Clear current options
-            this.elements.input.innerHTML = "";
-            this.elements.options.innerHTML = "";
+            Array.prototype.slice.call(this.elements.options.children).forEach(function (option) {
+                if (option.dataset.value.lenth > 0) {
+                    _this3.elements.options.removeChild(option);
+                }
+            });
+
+            // Clear current options
+            //this.elements.input.innerHTML = "";
+            //this.elements.options.innerHTML = "";
 
             // Push placeholder input option
             var placeholder = document.createElement("option");
@@ -265,9 +279,7 @@ var SelectField = function (_Field) {
     }, {
         key: symbols.setValue,
         value: function value(_value) {
-            if (this.get() === _value) {
-                return false;
-            }
+            var currentValue = this.get();
 
             // Get option
             var option;
@@ -302,7 +314,7 @@ var SelectField = function (_Field) {
                 this.elements.input.value = _value;
             }
 
-            return true;
+            return currentValue !== this.get();
         }
     }]);
 

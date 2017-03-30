@@ -162,9 +162,23 @@ export default class SelectField extends Field {
         // Clear selection
         this.set(null, true);
 
+        // Clear current input options
+        Array.prototype.slice.call(this.elements.input.options).forEach((option) => {
+            if (option.value.length > 0) {
+                this.elements.input.removeChild(option);
+            }
+        });
+
         // Clear current options
-        this.elements.input.innerHTML = "";
-        this.elements.options.innerHTML = "";
+        Array.prototype.slice.call(this.elements.options.children).forEach((option) => {
+            if (option.dataset.value.lenth > 0) {
+                this.elements.options.removeChild(option);
+            }
+        });
+
+        // Clear current options
+        //this.elements.input.innerHTML = "";
+        //this.elements.options.innerHTML = "";
 
         // Push placeholder input option
         var placeholder = document.createElement("option");
@@ -218,9 +232,7 @@ export default class SelectField extends Field {
      */
 
     [symbols.setValue](value) {
-        if (this.get() === value) {
-            return false;
-        }
+        var currentValue = this.get();
 
         // Get option
         var option;
@@ -255,7 +267,7 @@ export default class SelectField extends Field {
             this.elements.input.value = value;
         }
 
-        return true;
+        return currentValue !== this.get();
     }
 
 }
