@@ -5,21 +5,24 @@ const
     buffer = require("vinyl-buffer"),
     browserify = require("browserify"),
     watchify = require("watchify"),
-    eventStream = require("event-stream"),
     sass = require("gulp-sass"),
     autoprefixer = require("gulp-autoprefixer"),
-    rename = require("gulp-rename");
+    rename = require("gulp-rename"),
+    babel = require("gulp-babel");
 
 /*
  -------------------------------
- JS Compile function
+ Tasks
  -------------------------------
  */
 
-function compileJS() {
-    var bundler = browserify("./src/js/index.js", {debug: true}).transform("babelify", {presets: ["es2015"]});
+gulp.task("watch-js", () => {
+    return gulp.watch("./src/js/**/*.js", ["build-js", "dist-js"]);
+});
 
-    return bundler.bundle()
+gulp.task("dist-js", ["build-js"], () => {
+    return browserify("./build/index.js", {debug: true})
+        .bundle()
         .on("error", function (error) {
             console.error(error);
             this.emit("end");
@@ -29,20 +32,12 @@ function compileJS() {
         .pipe(sourcemaps.init({loadMaps: true}))
         .pipe(sourcemaps.write("./"))
         .pipe(gulp.dest("./dist"));
-}
-
-/*
- -------------------------------
- Tasks
- -------------------------------
- */
-
-gulp.task("watch-js", () => {
-    return gulp.watch("./src/js/**/*.js", ["build-js"]);
 });
 
 gulp.task("build-js", () => {
-    return compileJS();
+    return gulp.src("./src/js/**/*.js")
+        .pipe(babel({presets: ["es2015"]}))
+        .pipe(gulp.dest("./build"));
 });
 
 gulp.task("build-sass", () => {
@@ -61,7 +56,7 @@ gulp.task("watch-sass", () => {
     return gulp.watch("./src/sass/**/*.scss", ["build-sass"]);
 });
 
-gulp.task("build", ["build-sass", "build-js"]);
+gulp.task("build", ["build-sass", "dist-js"]);
 gulp.task("watch", ["watch-sass", "watch-js"]);
 
 gulp.task("default", ["watch"]);

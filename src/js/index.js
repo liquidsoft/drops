@@ -16,7 +16,9 @@ import symbols from "./symbols";
     var drops = factory();
 
     // Common JS (since this is browserify it's fair to export all the time)
-    module.exports = drops;
+    if (module && (typeof module === "object") && (module.exports)) {
+        module.exports = drops;
+    }
 
     // AMD
     if (typeof define === "function" && define.amd) {
@@ -26,11 +28,11 @@ import symbols from "./symbols";
     }
 
     // Window
-    else {
+    else if (root) {
         root.drops = drops;
     }
 
-})(window || global, function () {
+})(window, function () {
 
     // Push bundled fields
     register("select", Select);
