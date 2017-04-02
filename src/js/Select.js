@@ -256,6 +256,16 @@ export default class SelectField extends Field {
      -------------------------------
      */
 
+    [symbols.getValue]() {
+        var options = Array.prototype.slice.call(this.elements.input.options);
+
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].selected) {
+                return options[i].value;
+            }
+        }
+    }
+
     [symbols.setValue](value) {
         var currentValue = this.get();
 

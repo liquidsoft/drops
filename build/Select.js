@@ -303,6 +303,17 @@ var SelectField = function (_Field) {
          */
 
     }, {
+        key: symbols.getValue,
+        value: function value() {
+            var options = Array.prototype.slice.call(this.elements.input.options);
+
+            for (var i = 0; i < options.length; i++) {
+                if (options[i].selected) {
+                    return options[i].value;
+                }
+            }
+        }
+    }, {
         key: symbols.setValue,
         value: function value(_value) {
             var currentValue = this.get();
