@@ -38,6 +38,9 @@ export default class SelectField extends Field {
         this.options = assign(this.options, {
             placeholder: this.elements.input.dataset.placeholder || "",
 
+            // TODO: Extend this functionality
+            withoutBlank: false,
+
             // Query
             queryOptions: true,
             queryPlaceholder: "Filter options...",
@@ -72,6 +75,10 @@ export default class SelectField extends Field {
         //
 
         this.elements.wrapper.className += " drops-select";
+
+        if (this.options.withoutBlank) {
+            this.elements.wrapper.className += " drops-wihout-blank";
+        }
 
         //
         // Options query
@@ -232,6 +239,10 @@ export default class SelectField extends Field {
         option.className = "drops-option";
         option.innerHTML = this.options.getOption(data);
 
+        if (data.value.length === 0) {
+            option.className += " drops-option-blank";
+        }
+
         Object.keys(data).forEach((key) => {
             option.dataset[key] = data[key];
         });
@@ -255,16 +266,6 @@ export default class SelectField extends Field {
      Value
      -------------------------------
      */
-
-    [symbols.getValue]() {
-        var options = Array.prototype.slice.call(this.elements.input.options);
-
-        for (var i = 0; i < options.length; i++) {
-            if (options[i].selected) {
-                return options[i].value;
-            }
-        }
-    }
 
     [symbols.setValue](value) {
         var currentValue = this.get();

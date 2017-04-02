@@ -18,8 +18,8 @@
 </head>
 <body>
 <div class="container">
-    <select id="select-field" data-placeholder="Chose an option">
-        <option value="" selected>All</option>
+    <select id="select-field">
+        <option value="">Choose an option</option>
         <option value="option_1">Option 1</option>
         <option value="option_2">Option 2</option>
     </select>
@@ -27,7 +27,9 @@
 <script type="text/javascript" src="./../dist/drops.js"></script>
 <script type="text/javascript">
     var select = window.select = document.getElementById("select-field");
-    var field = window.field = drops.create("select", select);
+    var field = window.field = drops.create("select", select, {
+        withoutBlank: true
+    });
 </script>
 </body>
 </html>

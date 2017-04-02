@@ -26,4 +26,14 @@
     }
   }
 
+  &.drops-wihout-blank {
+    .drops-options {
+      .drops-option {
+        &.drops-option-blank {
+          display: none;;
+        }
+      }
+    }
+  }
+
 }

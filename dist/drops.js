@@ -479,6 +479,9 @@ var SelectField = function (_Field) {
             this.options = (0, _objectAssign2.default)(this.options, {
                 placeholder: this.elements.input.dataset.placeholder || "",
 
+                // TODO: Extend this functionality
+                withoutBlank: false,
+
                 // Query
                 queryOptions: true,
                 queryPlaceholder: "Filter options...",
@@ -514,6 +517,10 @@ var SelectField = function (_Field) {
             //
 
             this.elements.wrapper.className += " drops-select";
+
+            if (this.options.withoutBlank) {
+                this.elements.wrapper.className += " drops-wihout-blank";
+            }
 
             //
             // Options query
@@ -683,6 +690,10 @@ var SelectField = function (_Field) {
             option.className = "drops-option";
             option.innerHTML = this.options.getOption(data);
 
+            if (data.value.length === 0) {
+                option.className += " drops-option-blank";
+            }
+
             Object.keys(data).forEach(function (key) {
                 option.dataset[key] = data[key];
             });
@@ -706,17 +717,6 @@ var SelectField = function (_Field) {
          -------------------------------
          */
 
-    }, {
-        key: symbols.getValue,
-        value: function value() {
-            var options = Array.prototype.slice.call(this.elements.input.options);
-
-            for (var i = 0; i < options.length; i++) {
-                if (options[i].selected) {
-                    return options[i].value;
-                }
-            }
-        }
     }, {
         key: symbols.setValue,
         value: function value(_value) {
