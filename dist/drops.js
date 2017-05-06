@@ -519,7 +519,7 @@ var SelectField = function (_Field) {
             this.elements.wrapper.className += " drops-select";
 
             if (this.options.withoutBlank) {
-                this.elements.wrapper.className += " drops-wihout-blank";
+                this.elements.wrapper.className += " drops-without-blank";
             }
 
             //
