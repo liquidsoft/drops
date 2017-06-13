@@ -10,7 +10,7 @@
 import assign from "object-assign";
 import Field from "./Field";
 import * as symbols from "./symbols";
-import {debounce} from "./utils";
+import {debounce, matchesSelector, ancestorElement} from "./utils";
 import Symbol from "es6-symbol";
 
 // Local symbols
@@ -37,6 +37,9 @@ export default class SelectField extends Field {
 
         this.options = assign(this.options, {
             placeholder: this.elements.input.dataset.placeholder || "",
+
+            // Selector for the option select trigger
+            optionTrigger: ".drops-option",
 
             // TODO: Extend this functionality
             withoutBlank: false,
@@ -126,9 +129,13 @@ export default class SelectField extends Field {
         //
 
         this.elements.options.addEventListener("click", (e) => {
-            if (e.target.className.indexOf("drops-option") > -1) {
-                this.set(e.target.dataset.value);
-                this.close();
+            if (matchesSelector(e.target, this.options.optionTrigger)) {
+                var optionElement = ancestorElement(e.target, ".drops-option", true);
+
+                if (optionElement) {
+                    this.set(optionElement.dataset.value);
+                    this.close();
+                }
             }
         });
 

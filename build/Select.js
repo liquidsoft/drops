@@ -75,6 +75,9 @@ var SelectField = function (_Field) {
             this.options = (0, _objectAssign2.default)(this.options, {
                 placeholder: this.elements.input.dataset.placeholder || "",
 
+                // Selector for the option select trigger
+                optionTrigger: ".drops-option",
+
                 // TODO: Extend this functionality
                 withoutBlank: false,
 
@@ -147,11 +150,11 @@ var SelectField = function (_Field) {
             var options = [];
 
             Array.prototype.slice.call(this.elements.input.options).forEach(function (option) {
-                options.push({
+                options.push((0, _objectAssign2.default)({}, option.dataset, {
                     value: option.value,
                     label: option.innerText,
                     selected: option.selected
-                });
+                }));
             });
 
             this.setOptions(options, true);
@@ -168,9 +171,13 @@ var SelectField = function (_Field) {
             //
 
             this.elements.options.addEventListener("click", function (e) {
-                if (e.target.className.indexOf("drops-option") > -1) {
-                    _this2.set(e.target.dataset.value);
-                    _this2.close();
+                if ((0, _utils.matchesSelector)(e.target, _this2.options.optionTrigger)) {
+                    var optionElement = (0, _utils.ancestorElement)(e.target, ".drops-option", true);
+
+                    if (optionElement) {
+                        _this2.set(optionElement.dataset.value);
+                        _this2.close();
+                    }
                 }
             });
 

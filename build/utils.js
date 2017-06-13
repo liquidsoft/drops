@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.debounce = debounce;
 exports.listenOnce = listenOnce;
+exports.matchesSelector = matchesSelector;
+exports.ancestorElement = ancestorElement;
 /**
  * Debounces a function
  *
@@ -48,4 +50,39 @@ function listenOnce(element, eventName, callback) {
     }
 
     element.addEventListener(eventName, callbackWrapper);
+}
+
+/**
+ * Checks if a given element matches a given selector
+ *
+ * @param element
+ * @param selector
+ * @returns {boolean}
+ */
+function matchesSelector(element, selector) {
+    var wrap = document.createElement("div"),
+        clone = element.cloneNode(false);
+
+    wrap.appendChild(clone);
+    return wrap.querySelector(selector) === clone;
+}
+
+/**
+ * Searches for a parent element by selector
+ *
+ * @param element
+ * @param selector
+ * @param includeSelf
+ * @returns {*}
+ */
+function ancestorElement(element, selector) {
+    var includeSelf = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+    var current = includeSelf ? element : element.parentElement;
+
+    while (current && !matchesSelector(current, selector)) {
+        current = element.parentElement;
+    }
+
+    return current;
 }

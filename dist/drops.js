@@ -479,6 +479,9 @@ var SelectField = function (_Field) {
             this.options = (0, _objectAssign2.default)(this.options, {
                 placeholder: this.elements.input.dataset.placeholder || "",
 
+                // Selector for the option select trigger
+                optionTrigger: ".drops-option",
+
                 // TODO: Extend this functionality
                 withoutBlank: false,
 
@@ -551,11 +554,11 @@ var SelectField = function (_Field) {
             var options = [];
 
             Array.prototype.slice.call(this.elements.input.options).forEach(function (option) {
-                options.push({
+                options.push((0, _objectAssign2.default)({}, option.dataset, {
                     value: option.value,
                     label: option.innerText,
                     selected: option.selected
-                });
+                }));
             });
 
             this.setOptions(options, true);
@@ -572,9 +575,13 @@ var SelectField = function (_Field) {
             //
 
             this.elements.options.addEventListener("click", function (e) {
-                if (e.target.className.indexOf("drops-option") > -1) {
-                    _this2.set(e.target.dataset.value);
-                    _this2.close();
+                if ((0, _utils.matchesSelector)(e.target, _this2.options.optionTrigger)) {
+                    var optionElement = (0, _utils.ancestorElement)(e.target, ".drops-option", true);
+
+                    if (optionElement) {
+                        _this2.set(optionElement.dataset.value);
+                        _this2.close();
+                    }
                 }
             });
 
@@ -935,6 +942,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.debounce = debounce;
 exports.listenOnce = listenOnce;
+exports.matchesSelector = matchesSelector;
+exports.ancestorElement = ancestorElement;
 /**
  * Debounces a function
  *
@@ -978,6 +987,41 @@ function listenOnce(element, eventName, callback) {
     }
 
     element.addEventListener(eventName, callbackWrapper);
+}
+
+/**
+ * Checks if a given element matches a given selector
+ *
+ * @param element
+ * @param selector
+ * @returns {boolean}
+ */
+function matchesSelector(element, selector) {
+    var wrap = document.createElement("div"),
+        clone = element.cloneNode(false);
+
+    wrap.appendChild(clone);
+    return wrap.querySelector(selector) === clone;
+}
+
+/**
+ * Searches for a parent element by selector
+ *
+ * @param element
+ * @param selector
+ * @param includeSelf
+ * @returns {*}
+ */
+function ancestorElement(element, selector) {
+    var includeSelf = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+    var current = includeSelf ? element : element.parentElement;
+
+    while (current && !matchesSelector(current, selector)) {
+        current = element.parentElement;
+    }
+
+    return current;
 }
 },{}],7:[function(require,module,exports){
 'use strict';
