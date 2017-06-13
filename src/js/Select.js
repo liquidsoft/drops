@@ -108,11 +108,11 @@ export default class SelectField extends Field {
         var options = [];
 
         Array.prototype.slice.call(this.elements.input.options).forEach((option) => {
-            options.push({
+            options.push(assign({}, option.dataset, {
                 value: option.value,
                 label: option.innerText,
                 selected: option.selected
-            });
+            }));
         });
 
         this.setOptions(options, true);
