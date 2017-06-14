@@ -642,6 +642,8 @@ var SelectField = function (_Field) {
             Array.prototype.slice.call(this.elements.options.children).forEach(function (option) {
                 if (option.dataset.value.length > 0) {
                     _this3.elements.options.removeChild(option);
+                } else {
+                    option.innerHTML = _this3.options.getOption(_this3.getOptionData(""));
                 }
             });
 

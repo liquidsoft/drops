@@ -195,6 +195,9 @@ export default class SelectField extends Field {
             if (option.dataset.value.length > 0) {
                 this.elements.options.removeChild(option);
             }
+            else {
+                option.innerHTML = this.options.getOption(this.getOptionData(""));
+            }
         });
 
         // Push placeholder input option
