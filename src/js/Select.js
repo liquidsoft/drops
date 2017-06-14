@@ -95,6 +95,7 @@ export default class SelectField extends Field {
             this.elements.queryInput = document.createElement("input");
             this.elements.queryInput.type = "text";
             this.elements.queryInput.placeholder = this.options.queryPlaceholder;
+            this.elements.queryInput.value = this.elements.input.dataset.query || "";
             this.elements.query.appendChild(this.elements.queryInput);
         }
 
