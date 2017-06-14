@@ -101,7 +101,7 @@ var SelectField = function (_Field) {
 
 
                 // Option
-                getOption: function getOption(data) {
+                getOption: function getOption(field, data) {
                     return data.label;
                 }
             }, options);
@@ -239,7 +239,7 @@ var SelectField = function (_Field) {
                 if (option.dataset.value.length > 0) {
                     _this3.elements.options.removeChild(option);
                 } else {
-                    option.innerHTML = _this3.options.getOption(_this3.getOptionData(""));
+                    option.innerHTML = _this3.options.getOption(_this3, _this3.getOptionData(""));
                 }
             });
 
@@ -293,7 +293,7 @@ var SelectField = function (_Field) {
             // Create option
             var option = document.createElement("div");
             option.className = "drops-option";
-            option.innerHTML = this.options.getOption(data);
+            option.innerHTML = this.options.getOption(this, data);
 
             if (data.value.length === 0) {
                 option.className += " drops-option-blank";

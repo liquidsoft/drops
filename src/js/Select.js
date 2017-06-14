@@ -63,7 +63,7 @@ export default class SelectField extends Field {
             },
 
             // Option
-            getOption(data) {
+            getOption(field, data) {
                 return data.label;
             }
 
@@ -196,7 +196,7 @@ export default class SelectField extends Field {
                 this.elements.options.removeChild(option);
             }
             else {
-                option.innerHTML = this.options.getOption(this.getOptionData(""));
+                option.innerHTML = this.options.getOption(this, this.getOptionData(""));
             }
         });
 
@@ -247,7 +247,7 @@ export default class SelectField extends Field {
         // Create option
         var option = document.createElement("div");
         option.className = "drops-option";
-        option.innerHTML = this.options.getOption(data);
+        option.innerHTML = this.options.getOption(this, data);
 
         if (data.value.length === 0) {
             option.className += " drops-option-blank";
