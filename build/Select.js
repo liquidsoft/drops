@@ -209,7 +209,7 @@ var SelectField = function (_Field) {
         key: "getOptionData",
         value: function getOptionData(value) {
             var option = this.elements.options.querySelector(".drops-option[data-value='" + value + "']");
-            return option ? option.dataset : null;
+            return option ? (0, _objectAssign2.default)({}, option.dataset) : null;
         }
     }, {
         key: "setOptions",

@@ -169,7 +169,7 @@ export default class SelectField extends Field {
 
     getOptionData(value) {
         var option = this.elements.options.querySelector(`.drops-option[data-value='${value}']`);
-        return option ? option.dataset : null;
+        return option ? assign({}, option.dataset) : null;
     }
 
     setOptions(options, silent = false) {
